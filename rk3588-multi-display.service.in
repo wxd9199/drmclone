@@ -1,0 +1,26 @@
+[Unit]
+Description=RK3588 Multi-Display Manager
+Documentation=man:rk3588_multi_display(1)
+After=multi-user.target
+Wants=multi-user.target
+Conflicts=graphical.target
+
+[Service]
+Type=forking
+ExecStart=@CMAKE_INSTALL_PREFIX@/bin/rk3588_multi_display --daemon
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+Restart=always
+RestartSec=5
+User=root
+Group=root
+
+# 确保有访问DRM设备的权限
+SupplementaryGroups=video render
+
+# 环境变量
+Environment="QT_QPA_PLATFORM=eglfs"
+Environment="QT_QPA_EGLFS_KMS_DEVICE=/dev/dri/card0"
+
+[Install]
+WantedBy=multi-user.target 
